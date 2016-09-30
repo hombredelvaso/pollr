@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>DEMO POLL 1</title>
+  <link rel="stylesheet" type="text/css" href="../src/spinner.css">
+  <style>
+
+  .blue {
+    color: blue;
+  }
+
+  .pollr-poll {
+    padding-bottom: 10px;
+  }
+
+  .pollr-poll-front {
+    display: inline-block;
+    padding: 10px;
+    background-color: antiquewhite;
+  }
+
+  .pollr-question-section {
+    font-weight: 700;
+  }
+
+  .pollr-input-section {
+    padding-bottom: 10px;
+  }
+
+  .pollr-poll-back {
+    display: inline-block;
+    padding: 10px;
+    background-color: cadetblue;
+  }
+
+  .pollr-input-radio > label {
+    display: block;
+  }
+
+</style>
+</head>
+<body>
+
+  <div id="yesno-poll"><div class="pollr-loader"></div></div>
+
+  <br>
+
+  <div id="yesno-poll-2"><div class="pollr-loader"></div></div>
+
+  <br>
+  <br>
+
+  <div id="text-poll"><div class="pollr-loader"></div></div>
+
+  <div id="car-poll"><div class="pollr-loader"></div></div>
+
+  <div id="button-poll"><div class="pollr-loader"></div></div>
+
+  <script src="https://code.jquery.com/jquery-3.0.0.js" integrity="sha256-jrPLZ+8vDxt2FnE1zvZXCkCcebI/C8Dt5xyaQBjxQIo=" crossorigin="anonymous"></script>
+  <script src="../dist/pollr.js"></script>
+  <script>
+
+    Pollr.init({
+      'poll-1-version-1': {
+        name: 'Poll 1',
+        //question: 'What is your favorite animal?',
+        question: '<p>What is your favorite animal?</p>',
+//        input: {
+//          type: 'text',
+//          placeholder: 'Answer this...'
+//        },
+//        input: {
+//          type: 'select',
+//          placeholder: ''
+//          choices: []
+//        },
+        input: {
+          type: 'radio',
+          choices: [
+            { value: 'Zebra' },
+            { value: 'Orangutan' },
+            { value: 'Ocelot' }
+          ]
+        },
+        answerType: 'chart', // list
+        changeType: 'standard', // standard, flip, ...
+//        continue: function(){
+//          alert('poll complete')
+//        },
+        markup: {
+          front: {
+            class: 'pollr-poll-front',
+            question: '<p data-pollr-question></p>',
+            submission: '<button data-pollr-submission>Submit</button>'
+          },
+          back: {
+            class: 'pollr-poll-back',
+            yourAnswer: '<p>You chose: <span data-pollr-your-answer></span></p>',
+            continue: '<button data-pollr-continue>Continue</button>'
+          }
+        }
+      },
+      'poll-1-version-2': {
+        name: 'Poll 1.2',
+        //question: 'What is your favorite animal?',
+        question: '<p>What is your favorite animal?</p>',
+//        input: {
+//          type: 'text',
+//          placeholder: 'Answer this...'
+//        },
+//        input: {
+//          type: 'select',
+//          placeholder: ''
+//          choices: []
+//        },
+        input: {
+          type: 'radio',
+          choices: [
+            { value: 'Zebra' },
+            { value: 'Orangutan' },
+            { value: 'Ocelot' }
+          ]
+        },
+        answerType: 'chart', // list
+        changeType: 'standard', // standard, flip, ...
+//        continue: function(){
+//          alert('poll complete')
+//        },
+        markup: {
+          front: {
+            class: 'pollr-poll-front',
+            question: '<p data-pollr-question></p>',
+            submission: '<button data-pollr-submission>Submit</button>'
+          },
+          back: {
+            class: 'pollr-poll-back',
+            yourAnswer: '<p>You chose: <span data-pollr-your-answer></span></p>',
+            continue: '<button data-pollr-continue>Continue</button>'
+          }
+        }
+      },
+      'poll-2-version-1': {
+        name: 'Poll 2',
+        question: '<p>What do you think?</p>',
+        input: {
+          type: 'text',
+          placeholder: 'Type here...'
+        },
+        answerType: 'listing',
+        changeType: 'standard'
+      },
+      'poll-3-version-1': {
+        name: 'Poll 3',
+        question: '<p>I like cars, tell me about it...</p>',
+        input: {
+          type: 'text',
+          placeholder: 'Cars...'
+        },
+        answerType: 'listing',
+        changeType: 'standard', // flip
+        continue: function(){
+          alert('hi')
+        }
+      },
+      'poll-4-version-1': {
+        name: 'Poll 4',
+        question: '<p>Do you understand?</p>',
+        input: {
+          type: 'button',
+          choices: [
+            { element: 'a', value: 'Yes', classes: 'blue' },
+            { element: 'a', value: 'No' }
+          ]
+        },
+        answerType: 'chart',
+        changeType: 'standard', // flip
+        continue: function(){
+          alert('hi')
+        }
+      }
+    });
+
+    Pollr.onSubmission(function(identifier, type, question, submission){
+      console.log('store ' + identifier + '|' + type + '|' + question + '|' + submission + ' to tincan, localstore, etc...');
+      // $(document).trigger('tincan::polled', [ identifier, type, question, submission ]);
+    });
+
+    var getData = function(identifier, callback){
+
+      // local or tincan STUB \\
+      setTimeout(function(){
+
+        var mydata = {
+          'poll-1-version-1': 'Zebra',
+          'poll-1-version-2': null,
+          'poll-2-version-1': null,
+          'poll-3-version-1': null,
+          'poll-4-version-1': null
+        };
+
+        var theirdata = {
+          'poll-1-version-1': [{ value: 'Zebra', count: 12 }, { value: 'Ocelot', count: 4 }, { value: 'Orangutan', count: 0 }],
+          'poll-1-version-2': [{ value: 'Zebra', count: 100 }, { value: 'Ocelot', count: 70 }, { value: 'Orangutan', count: 40 }],
+          'poll-2-version-1': [{ value: 'I like this' }, { value: 'This is ok...' }, { value: 'It sucks.' }],
+          'poll-3-version-1': [],
+          'poll-4-version-1': [{ value: 'Yes', count: 3 }, { value: 'No', count: 2 }]
+        };
+
+        callback({ submission: mydata[identifier], submissions: theirdata[identifier] });
+
+      }, 3000)
+    };
+
+//    $(document).on('courseReady', function(){
+//
+//      $(document).trigger('tincan::getPollData', ['poll-1-version-1', function(data){
+//        Pollr.embed({ poll: 'poll-1-version-1', mount: '#yesno-poll', data: data });
+//      }]);
+//
+//    });
+
+    getData('poll-1-version-1', function(data){
+      Pollr.embed({ poll: 'poll-1-version-1', mount: '#yesno-poll', data: data });
+    });
+
+    getData('poll-1-version-2', function(data){
+      Pollr.embed({ poll: 'poll-1-version-2', mount: '#yesno-poll-2', data: data });
+    });
+
+    getData('poll-2-version-1', function(data) {
+      Pollr.embed({poll: 'poll-2-version-1', mount: '#text-poll', data: data });
+    });
+
+    getData('poll-3-version-1', function(data) {
+      Pollr.embed({poll: 'poll-3-version-1', mount: '#car-poll', data: data });
+    });
+
+    getData('poll-4-version-1', function(data) {
+      Pollr.embed({poll: 'poll-4-version-1', mount: '#button-poll', data: data });
+    });
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<tincan xmlns="http://projecttincan.com/tincan.xsd">
+    <activities>
+        <activity id="http://careerdevelopment.aaas.org/course1" type="http://adlnet.gov/expapi/activities/course">
+            <name>Avoiding Common Errors in Proposal Writing</name>
+            <description lang="en-US">Avoiding Common Errors in Proposal Writing</description>
+            <launch lang="en-us">index.html</launch>
+        </activity>
+    </activities>
+</tincan>

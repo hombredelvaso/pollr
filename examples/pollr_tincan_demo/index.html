@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title></title>
+
+    <link rel='shortcut icon' href='img/AAASfavicon.png' type='image/x-icon'/ >
+
+</head>
+
+<body background="img/aaas%20bg.jpg">
+
+  <div id="test-poll-1"></div>
+  <br>
+  <div id="test-poll-2"></div>
+  <div id="test-poll-3"></div>
+  <div id="test-poll-4"></div>
+
+  <!-- jQuery -->
+  <script src="js/jquery.js"></script>
+  <script src="js/config.js"></script>
+
+  <script src="js/tincan.js"></script>
+  <script src="js/tincan_functions.js"></script>
+  <script src="js/pollr.js"></script>
+  <script>
+    Pollr.init({
+      'poll-1-version-1': {
+        name: 'Poll 1',
+        //question: 'What is your favorite animal?',
+        question: '<p>What is your favorite animal?</p>',
+//        input: {
+//          type: 'text',
+//          placeholder: 'Answer this...'
+//        },
+//        input: {
+//          type: 'select',
+//          placeholder: ''
+//          choices: []
+//        },
+        input: {
+          type: 'radio',
+          choices: [
+            { value: 'Zebra' },
+            { value: 'Orangutan' },
+            { value: 'Ocelot' }
+          ]
+        },
+        answerType: 'chart', // list
+        changeType: 'standard', // standard, flip, ...
+//        continue: function(){
+//          alert('poll complete')
+//        },
+        markup: {
+          front: {
+            class: 'pollr-poll-front',
+            question: '<p data-pollr-question></p>',
+            submission: '<button data-pollr-submission>Submit</button>'
+          },
+          back: {
+            class: 'pollr-poll-back',
+            yourAnswer: '<p>You chose: <span data-pollr-your-answer></span></p>',
+            continue: '<button data-pollr-continue>Continue</button>'
+          }
+        }
+      },
+      'poll-2-version-1': {
+        name: 'Poll 2',
+        question: '<p>What do you think?</p>',
+        input: {
+          type: 'text',
+          placeholder: 'Type here...'
+        },
+        answerType: 'listing',
+        changeType: 'standard'
+      },
+      'poll-3-version-1': {
+        name: 'Poll 3',
+        question: '<p>I like cars, tell me about it...</p>',
+        input: {
+          type: 'text',
+          placeholder: 'Cars...'
+        },
+        answerType: 'listing',
+        changeType: 'standard', // flip
+        continue: function(){
+          alert('hi')
+        }
+      },
+      'poll-4-version-1': {
+        name: 'Poll 4',
+        question: '<p>Do you understand?</p>',
+        input: {
+          type: 'button',
+          choices: [
+            { element: 'a', value: 'Yes', classes: 'blue' },
+            { element: 'a', value: 'No' }
+          ]
+        },
+        answerType: 'chart',
+        changeType: 'standard', // flip
+        continue: function(){
+          alert('hi')
+        }
+      }
+    });
+
+    $(document).on('courseReady', function(){
+
+      Pollr.onSubmission(function(identifier, type, question, submission){
+        $(document).trigger('tincan::polled', [ identifier, type, question, submission ]);
+      });
+
+      $(document).trigger('tincan::getPollData', ['poll-1-version-1', function(data){
+        Pollr.embed({ poll: 'poll-1-version-1', mount: '#test-poll-1', data: data });
+      }]);
+
+      $(document).trigger('tincan::getPollData', ['poll-2-version-1', function(data){
+        Pollr.embed({ poll: 'poll-2-version-1', mount: '#test-poll-2', data: data });
+      }]);
+
+      $(document).trigger('tincan::getPollData', ['poll-3-version-1', function(data){
+        Pollr.embed({ poll: 'poll-3-version-1', mount: '#test-poll-3', data: data });
+      }]);
+
+      $(document).trigger('tincan::getPollData', ['poll-4-version-1', function(data){
+        Pollr.embed({ poll: 'poll-4-version-1', mount: '#test-poll-4', data: data });
+      }]);
+
+    });
+
+  </script>
+
+</body>
+
+</html>

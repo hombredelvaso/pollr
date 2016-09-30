@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title></title>
+
+    <link rel='shortcut icon' href='../../../../../../../.Trash/img/AAASfavicon.png' type='image/x-icon'/ >
+
+    <!-- Core CSS -->
+    <link href="../../../../../../../.Trash/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href="../../../../../../../.Trash/css/font-awesome.css" rel="stylesheet">
+    <link href="../../../../../../../.Trash/css/simple-sidebar.css" rel="stylesheet">
+    <link href="../../../../../../../.Trash/css/custom.css" rel="stylesheet">
+    <link href="../../../../../../../.Trash/css/magic-check.css" rel="stylesheet">
+    <link href="../../../../../../../.Trash/vendor/jquery-confirm/dist/jquery-confirm.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="//assets.adobedtm.com/926659a1689cc9fca96760b67cca714ae48f0584/satelliteLib-a9d46808a35b7b8034adfab1d8207407222304d5.js"></script>
+
+</head>
+
+<body background="../../../../../../../.Trash/img/aaas%20bg.jpg">
+
+<!-- Nav -->
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+        <div id="dropdizzle" class="toc-button dropdown">
+            <button class="btn btn-primary dropdown-toggle toc-but" type="button" data-toggle="dropdown">Table of Contents
+            <span class="caret"></span></button>
+            <ul id="mount-list" class="dropdown-menu scrollable-menu"><!-- assessment.js#DRAW_SECTIONS --></ul>
+            <a id="navizzle" class="nav-logo"><img src="../../../../../../../.Trash/img/aaas-logo.png"></a>
+        </div>
+</nav>
+<!-- end Nav -->
+
+    <!-- end Table of Contents-->
+
+    <!-- Video player -->
+
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+              <div id="video-player" class="col-lg-10 center">
+                <video class="video video-section" id="page-video" style="display:none;" src="http://player.vimeo.com/external/168195716.hd.mp4?s=87caec07e0c955f826df6fc7d78c679f22ba0b67&profile_id=174">
+                        <source src="http://player.vimeo.com/external/168195716.hd.mp4?s=87caec07e0c955f826df6fc7d78c679f22ba0b67&profile_id=174" type="video/mp4">
+                         <source src="movie.ogg" type="video/ogg">
+                        Your browser does not support the video tag.
+                    </video>
+                <div class="exercise-section" style="display:none;"></div>
+                <div class="image-section" style="display:none;"></div>
+                <div class="markup-section" style="display:none;"></div>
+                <div class="done-section" style="display:none;"></div>
+              </div>
+            </div>
+            <div id="vid-controls">
+                <div class="row">
+                    <div class="time-buffer col-lg-10">
+                        <input class="time-slider toc-but big-but" id="time-slider" type="range" value="0" step="any" style="display:none;"/>
+                        <span class="timestamp big-but" id="current-time-value" style="display:none;">00:00</span>
+                    </div>
+                </div>
+                <a class="btn btn-default toc-but big-but trigger-play" id="play" style="display:none;"><i class="fa fa-play"></i></a>
+                <a class="btn btn-default toc-but big-but trigger-pause" id="pause" style="display:none;"><i class="fa fa-pause"></i></a>
+                <a class="btn btn-default toc-but trigger-back" id="back" style="display:none;"><i class="fa fa-arrow-left"></i></a>
+                <a class="btn btn-default toc-but trigger-next" id="next" style="display:none;"><i class="fa fa-arrow-right"></i></a>
+                <a class="btn btn-default toc-but big-but" id="fullscreen-toggle" style="display:none;"><i class="fa fa-arrows-alt"></i></a>
+                <a href="http://careerdevelopment.aaas.org/wp-content/uploads/2016/04/aaas-help.pdf" target="_blank" class="btn btn-default toc-but help" id="help" style="display:none;"><i class="fa fa-question-circle"></i></a>
+                <button class="btn btn-primary dropdown-toggle prog-color" style="display:none;"><span id="prog"></span>
+                </button>
+            </div>  
+        </div>
+    </div>
+
+    <!-- end Video Player -->
+
+    <!-- Answer Feedback -->
+
+    <div class="container">
+
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="feedback-modal-dialog modal-dialog">
+
+                <!-- Feedback Modal Content-->
+
+                <div class="feedback-modal-content modal-content">
+                    <div class="feedback-modal-header modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="feedback-modal-body modal-body">                     
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Answer Feedback -->
+
+    <!-- Communicating Modal 1 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="communicating-1" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">Scientists need to be proactive in the way they communicate with policy makers and need to communicate in a less technical way and in a way that matters to the policy makers. They need to think about how their science relates to that topic, so that they can frame their message in a way that is relevant to policy makers that is also clear and concise and without jargon.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Communicating Modal 1 -->
+
+    <!-- Communicating Modal 2 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="communicating-2" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">When working with the media, scientists should be particularly proactive. Plan your messages out ahead of time. Start with the bottom line—the facts that are most important to have in the article. Be sure to speak clearly, precisely and be patient since the journalist may be taking notes or waiting for you to say more.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Communicating Modal 2 -->
+
+    <!-- Communicating Modal 3 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="communicating-3" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">Scientists are trained to communicate with other scientists in a very effective and efficient way. However when speaking with public audiences, an opposite approach is usually best. Speak as though you were speaking with a friend about something unrelated to science, in order to communicate in a way that matters to them. Using jargon and relying on precise technical terms is also a common pitfall and should be avoided and instead, translate those terms into clear and precise descriptions.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Communicating Modal 3 -->
+
+    <!-- Communicating Modal 4 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="communicating-4" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">The internet and social media offer many ways for scientists to communicate with public audiences. The internet can increase the pace of conversation about scientific topics and may seem to broaden the communication about the topic. But it is important for scientists to consider the audiences they are reaching. Scientists need to use social media to reach outside of the audiences with whom they are currently connecting, to find other audiences with whom they might want to connect. Be deliberate and proactive about where they are, the channels of communication they are using when connecting with those people in social media.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Communicating Modal 4 -->
+
+    <!-- Legislator Modal 1 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="legislator-1" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">Find out who your member of congress is and where you might meet them, either in their district or DC office. Contact them to introduce yourself and see about setting up a meeting with them or their staff member. Then research what their priorities are—what committees do they sit on and what issues are important to them? Figure out how the issues you want to discuss relate to their issues and priorities. Figure out how best to articulate your message as to how what you do is valuable to them and the country. Be sure to prepare for your meeting by articulating what you want to say and condensing it.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Legislator Modal 1 -->
+
+    <!-- Legislator Modal 2 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="legislator-2" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">Universities and institutions like AAAS deal constantly with government relations and monitor the legislative cycle and what congress is doing.  They are therefore an excellent resource for finding out the best way you can make your case heard and for contacting the right point of contact. They also have numerous resources where you can get additional background and current information regarding the topic you wish to discuss.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Legislator Modal 2 -->
+
+    <!-- Legislator Modal 3 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="legislator-3" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">Follow-up is very important. For example, if your focus is on a particular bill in congress, keep abreast of the progress of that bill, and what your congress person or their staff has done in response to your meeting. By following up with them, they will know that you are not a one-time visitor, but are monitoring this as it is very important to you.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Legislator Modal 3 -->
+
+    <!-- Understanding Modal 1 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="understanding-1" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">Almost all federal science spending is part of the discretionary spending, the part of the budget congress allocates every year through the appropriations process. The size of the science budget is almost directly determined by the size of the discretionary spending budget.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- Understanding Modal 2 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="understanding-2" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">Usually, when appropriators are making their decisions, they are reacting to extensive budget documents that the agency has already prepared over several months before those documents even go to congress. So agencies have a pretty good idea when they get their appropriation how they are going to spend that money.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Understanding Modal 2 -->
+
+    <!-- Understanding Modal 3 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="understanding-3" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">A good starting point would be the Government Affairs professionals at your respective institutions or the science societies to which they belong.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Understanding Modal 3 -->
+
+    <!-- Spotlight Modal 1 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="spotlight-1" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">To be eligible, you must be a US citizen and have a doctoral-level degree in a scientific discipline, or a master’s in engineering, provided that you also have three years of professional engineering experience. You must have completed all of the degree requirements for that qualifying degree by the November 1st deadline.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Spotlight Modal 1 -->
+
+    <!-- Spotlight Modal 2 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="spotlight-2" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">The online application is open from May through November each year with a deadline of November 1st. The application then goes through an eligibility review and then it is sent to a first round of reviewers. In January, the applications are sent to selection committees to select the semi-finalists to be interviewed via video-conferencing. From these interviews, the finalists are selected. For the Executive Branch placements, the finalists then come to Washington, DC in April to be interviewed by the actual federal agencies. In May and June the offers are made and in June and July the placements are finalized. For Congressional Fellows, the finalists come to Washington in September for an orientation and then interviews with the host offices for placement.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Spotlight Modal 2 -->
+
+    <!-- Spotlight Modal 3 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="spotlight-3" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">Excellent scientist, engineer or health professional as it is important to bring that level of rigor to the federal government. Applicants must show leadership ability both with large and small groups. And they must show a commitment to public service and an interest in public policy (although they do not necessarily need public policy experience). And finally, they should be able to demonstrate how their skills would be able to contribute to public policy issues. They also must be an excellent communicator since so much of this role is as a translator to broad and non-scientific audiences.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Spotlight Modal 3 -->
+
+    <!-- Spotlight Modal 4 -->
+
+    <div class="container">
+
+        <div class="modal fade" id="spotlight-4" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="learn-modal-content modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="join-cust feedback-txt">There are fellows in all sectors: public, private and non-profit as well as academia. Approximately 50% of fellows remain in the public policy sphere. About one quarter go back to their former sector and one quarter do something completely different.</p>
+                    <br><br>
+                    <div class="join-cust-2 join-cust">
+                        <em class="feedback-txt">You can click within this window to close and then you can continue to the next question.</em>   
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Spotlight Modal 4 -->
+
+    <!-- Hour Pledge Modal -->
+
+    <div class="container">
+
+        <div class="modal fade" id="pledge-hour" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="pledge-modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body"> 
+                        <div class="col-lg-10">
+                            <h1 class="join-cust">How to Engage in a Hour</h1> 
+                            <p class="join-cust-2">By giving an HOUR of your time, you may effect positive change by:</p>
+                            <br>
+                            <ul>
+                                <li class="join-cust-2">Learn about a policy issue that affects you.</li> 
+                                <li class="join-cust-2">Vote! Pay attention to what is going on in your community and your state.</li> 
+                                <li class="join-cust-2">Sign up for updates. Find a way to get updates on the issues you care about most, such as newsletters and blogs that are covering these issues.</li> 
+                                <li class="join-cust-2">Find out who your elected officials are, then learn about them and what they’ve said about research, or science, or technology, or education, or anything that interests you.</li> 
+                                <li class="join-cust-2">Call or email your elected official.</li>
+                                <li class="join-cust-2">Find out who your government relations representative is and share your research with them.</li>
+                                <li class="join-cust-2">Find out about your scientific society - become a member of AAAS or become a member of at least one society pertaining to your scientific discipline.</li>
+                                <li class="join-cust-2">Watch a webinar or an online course.</li>
+                            </ul>
+                            <br>
+                            <br>
+                            <a href="http://careerdevelopment.aaas.org/wp-content/uploads/2016/05/AAAS-pledge-hour-1.pdf" class="btn print-pledge-btn" target="_blank"><i class="fa fa-2x fa-print" aria-hidden="true"></i>   Click to print or download your engagement plan</a>
+                            <br>
+                            <p class="join-cust-2"><em>You can now close this window by clicking "X" above and continue.</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Hour Pledge Modal -->
+
+    <!-- Day Pledge Modal -->
+
+    <div class="container">
+
+        <div class="modal fade" id="pledge-day" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="pledge-modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body"> 
+                        <div class="col-lg-10">
+                            <h1 class="join-cust">How to Engage in a Day</h1> 
+                            <p class="join-cust-2">By giving a DAY of your time, you may effect positive change by:</p>
+                            <br>
+                            <ul>
+                                <li class="join-cust-2">Write an op-ed, a letter to the editor for your local newspaper or a blog post.</li> 
+                                <li class="join-cust-2">Visit your member of Congress.</li> 
+                                <li class="join-cust-2">Learn about the Federal budget process.</li> 
+                                <li class="join-cust-2">Nominate your peers for awards, such as The Golden Goose Award.</li> 
+                            </ul>
+                            <br>
+                            <br>
+                            <a href="http://careerdevelopment.aaas.org/wp-content/uploads/2016/05/AAAS-pledge-day-1.pdf" class="btn print-pledge-btn" target="_blank"><i class="fa fa-2x fa-print" aria-hidden="true"></i>   Click to print or download your engagement plan</a>
+                            <br>
+                            <p class="join-cust-2"><em>You can now close this window by clicking "X" above and continue.</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Day Pledge Modal -->
+
+    <!-- Week Pledge Modal -->
+
+    <div class="container">
+
+        <div class="modal fade" id="pledge-week" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="pledge-modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body"> 
+                        <div class="col-lg-10">
+                            <h1 class="join-cust">How to Engage in a Week</h1> 
+                            <p class="join-cust-2">By giving a WEEK of your time, you may effect positive change by:</p>
+                            <br>
+                            <ul>
+                                <li class="join-cust-2">Offer public comments on policy documents.</li> 
+                                <li class="join-cust-2">Attend a training session to learn about policy or to build the skills to engage in policy.</li> 
+                                <li class="join-cust-2">Plan a visit from your lawmaker to your campus or lab.</li> 
+                                <li class="join-cust-2">Read a book on science policy.</li> 
+                            </ul>
+                            <br>
+                            <br>
+                            <a href="http://careerdevelopment.aaas.org/wp-content/uploads/2016/05/AAAS-pledge-week-1.pdf" class="btn print-pledge-btn" target="_blank"><i class="fa fa-2x fa-print" aria-hidden="true"></i>   Click to print or download your engagement plan</a>
+                            <br>
+                            <p class="join-cust-2"><em>You can now close this window by clicking "X" above and continue.</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Week Pledge Modal -->
+
+    <!-- Year Pledge Modal -->
+
+    <div class="container">
+
+        <div class="modal fade" id="pledge-year" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="pledge-modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body"> 
+                        <div class="col-lg-10">
+                            <h1 class="join-cust">How to Engage in a Year</h1> 
+                            <p class="join-cust-2">By giving a YEAR of your time, you may effect positive change by:</p>
+                            <br>
+                            <ul>
+                                <li class="join-cust-2">Do a fellowship.</li> 
+                                <li class="join-cust-2">Start - or advise - a science policy group.</li> 
+                                <li class="join-cust-2">Teach a science policy course</li> 
+                                <li class="join-cust-2">Serve on a governmental Advisory board.</li> 
+                                <li class="join-cust-2">Run for an elected office.</li> 
+                            </ul>
+                            <br>
+                            <br>
+                            <a href="http://careerdevelopment.aaas.org/wp-content/uploads/2016/05/AAAS-pledge-year-1.pdf" class="btn print-pledge-btn" target="_blank"><i class="fa fa-2x fa-print" aria-hidden="true"></i>   Click to print or download your engagement plan</a>
+                            <br>
+                            <p class="join-cust-2"><em>You can now close this window by clicking "X" above and continue.</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Year Pledge Modal -->
+
+    <!-- Year Lifetime Modal -->
+
+    <div class="container">
+
+        <div class="modal fade" id="pledge-lifetime" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal Content-->
+
+                <div class="pledge-modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close mod-close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body"> 
+                        <div class="col-lg-10">
+                            <h1 class="join-cust">How to Engage in a Lifetime</h1> 
+                            <p class="join-cust-2">We've talked about how to engage policy in one hour, one day, one week, and one year. What about a lifetime?</p>
+                            <br>
+                            <ul>
+                                <li class="join-cust-2">Start a science policy program.</li> 
+                                <li class="join-cust-2">Make science policy your career.</li> 
+                                <li class="join-cust-2">Get involved with your scientific society.</li> 
+                            </ul>
+                            <br>
+                            <br>
+                            <a href="http://careerdevelopment.aaas.org/wp-content/uploads/2016/05/AAAS-pledge-lifetime-1.pdf" class="btn print-pledge-btn" target="_blank"><i class="fa fa-2x fa-print" aria-hidden="true"></i>   Click to print or download your engagement plan</a>
+                            <br>
+                            <p class="join-cust-2"><em>You can now close this window by clicking "X" above and continue.</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <!-- end Lifetime Pledge Modal -->
+
+</div>
+
+  <!-- jQuery -->
+  <script src="../../../../../../../.Trash/js/jquery.js"></script>
+
+  <!-- Bootstrap Core JavaScript -->
+  <script src="../../../../../../../.Trash/js/bootstrap.min.js"></script>
+
+  <!-- Custom Scripts -->
+  <script src="../../../../../../../.Trash/vendor/jquery-confirm/dist/jquery-confirm.min.js"></script>
+  <script src="../../../../../../../.Trash/js/enquire.js"></script>
+
+  <!-- Configuration -->
+  <script src="js/extensions.js"></script>
+  <script src="../../../../../../../.Trash/js/config.js"></script>
+
+  <!-- TinCan Calls -->
+  <script src="../../../../../../../.Trash/js/tincan.js"></script>
+  <script src="js/tincan_functions.js"></script>
+  <script src="js/tincan_implement.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script src="js/assessment.js"></script>
+
+  <script type="text/javascript">_satellite.pageBottom();</script>
+
+</body>
+
+</html>
