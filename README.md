@@ -2,20 +2,14 @@
 ```npm run compile```
 
 #### TODO
-- TINCAN IS SLOW ON SUBMIT... tincan.js:7442 => Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.
-- your initial anwer should show up on graph along with others...
+- if slow to compile all results... change style of results to keep aggregate poll result statement that is updated each time... only need to find ONE statement, not many then compile each time...
+  - also update poll.js `buildAllAnswers`
+
 - jscompress for final payload in pipeline?
-- cdn to serve js file instead of adding to package?
-
-- lrs get and set formatted data, query
-- put question on back to remind what people answered...
-
-- text: you said, they said?
+- cdn to serve js file instead of adding to package? (distributed updates)
 - push out data to be stored for local?
 - animate on transition?
 - on transition callback additon in config... add function to store answeres and use as needed
-- pass in previous answer from tincan: start at back of poll
-
 - config... should show front even if previously submitted?
 - safe identifier: sluggify, make unique... or throw error
 

@@ -369,7 +369,7 @@ $(document).on('tincan::init', function(){
 
     statements.push(interactionStatement);
 
-    tincan.sendStatements(statements);
+    tincan.sendStatements(statements, function(err, xhr){});
   };
 
   var doStart = function(){
@@ -446,7 +446,7 @@ $(document).on('tincan::init', function(){
       statements.push(attemptedStatement);
     }
 
-    tincan.sendStatements(statements);
+    tincan.sendStatements(statements, function(err, xhr){});
     //goToPage();
   };
 
@@ -472,7 +472,7 @@ $(document).on('tincan::init', function(){
 
     statements.push(answeredStatement);
 
-    tincan.sendStatements(statements);
+    tincan.sendStatements(statements, function(err, xhr){});
   };
 
   var storeAttemptState = function(state){
@@ -506,7 +506,7 @@ $(document).on('tincan::init', function(){
 
     statements.push(completedStatement);
 
-    tincan.sendStatements(statements);
+    tincan.sendStatements(statements, function(err, xhr){});
   };
 
   // poll type action
@@ -538,6 +538,14 @@ $(document).on('tincan::init', function(){
       }
     };
 
+    var context = {};
+
+    var extensions = {};
+
+    extensions[pollIdExtension] = identifier;
+
+    context['extensions'] = extensions;
+
     var interactionStatement = {
       verb: {
         id: pollVerb,
@@ -547,22 +555,18 @@ $(document).on('tincan::init', function(){
       },
       result: createResult(),
       object: createObject(),
-      context: {
-        extensions: {
-          "http://id.tincanapi.com/extension/poll": identifier
-        }
-      }
+      context: context
     };
 
     statements.push(interactionStatement);
 
-    tincan.sendStatements(statements);
+    tincan.sendStatements(statements, function(err, xhr){});
 
   };
 
   var getPollData = function(identifier, callback){
     tincan.getStatements({
-      params: { verb: { "id": pollVerb } },
+      params: { activity: tincan.activity, verb: { id: pollVerb } },
       callback: function(err, result){
         if(err){ console.log(err); return err; }
         var pollId = identifier;

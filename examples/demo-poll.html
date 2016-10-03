@@ -200,11 +200,11 @@
         };
 
         var theirdata = {
-          'poll-1-version-1': [{ value: 'Zebra', count: 12 }, { value: 'Ocelot', count: 4 }, { value: 'Orangutan', count: 0 }],
-          'poll-1-version-2': [{ value: 'Zebra', count: 100 }, { value: 'Ocelot', count: 70 }, { value: 'Orangutan', count: 40 }],
+          'poll-1-version-1': [{ value: 'Zebra' }, { value: 'Ocelot' }, { value: 'Orangutan' }, { value: 'Orangutan' }, { value: 'Orangutan' }],
+          'poll-1-version-2': [{ value: 'Zebra' }, { value: 'Ocelot' }, { value: 'Orangutan' }, { value: 'Zebra' }, { value: 'Zebra' },  { value: 'Orangutan' }],
           'poll-2-version-1': [{ value: 'I like this' }, { value: 'This is ok...' }, { value: 'It sucks.' }],
           'poll-3-version-1': [],
-          'poll-4-version-1': [{ value: 'Yes', count: 3 }, { value: 'No', count: 2 }]
+          'poll-4-version-1': [{ value: 'Yes' }, { value: 'Yes' }, { value: 'No' }, { value: 'No' }, { value: 'No' }, { value: 'No' }]
         };
 
         callback({ submission: mydata[identifier], submissions: theirdata[identifier] });

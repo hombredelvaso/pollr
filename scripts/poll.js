@@ -6,6 +6,7 @@ require('./../vendor/jquery.flip.js');
 var R = require('ramda');
 var jss = require('jss');
 var Chartist = require('chartist');
+var S = require('string');
 //////////////////////////////////
 //////////////////////////////////
 
@@ -139,20 +140,29 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
   };
 
   var buildAllAnswers = function(answerType, pollId, allAnswersMount){
-    var data = DATA[pollId]['submissions'];
 
     var listing = function(){
+      var data = R.compose(
+          R.pathOr([], [pollId, 'submissions'])
+      )(DATA);
+
       var answers = '<div class="pollr-all-answers"><ul class="pollr-all-answers-list">' + data.map(function(answer){ return '<li>' + answer.value + '</li>' }).join('') + '</ul></div>';
       $(allAnswersMount).html(answers);
     };
 
     var chart = function(){
       var id = 'pollr-' + HELPERS.generateUUID();
+
       $(allAnswersMount).html('<div class="pollr-all-answers"><div id="' + id + '" class="pollr-all-answers-chart"></div></div>');
-      //console.log(id)
+
+      var data = R.compose(
+        R.groupBy(R.prop('value')),
+        R.pathOr([], [pollId, 'submissions'])
+      )(DATA);
+
       var _chart = new Chartist.Bar('#' + id, {
-        labels: DATA[pollId]['submissions'].map(function(choice){ return choice.value }),
-        series: [ data.map(function(choice){ return choice.count }) ]
+        labels: R.keys(data),
+        series: R.compose(R.append(R.__, []), R.map(R.length), R.values)(data)
       }, {
         seriesBarDistance: 10,
         reverseData: true,
@@ -183,6 +193,7 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
       '</div>';
 
   var back = '<div class="' + backClass + '">' +
+      '<div class="pollr-question-section">' + questionHtml + '</div>' +
       '<div class="pollr-your-answer-section">' + yourAnswerHtml + '</div>' +
       '<div class="pollr-all-answers-section"><div data-pollr-all-answers-' + pollId + '></div></div>' +
       '<div class="pollr-continue-section">' + (continueAction ? continueHtml : '') + '</div>' +
@@ -200,6 +211,7 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
   $(document).on('POLLR::drawBack', function(event, id){
     if(pollId === id){
       $(mountSelector + ' > .pollr-poll').html(back);
+      $('[data-pollr-question-' + pollId + ']').html(question);
       $('[data-pollr-your-answer-' + pollId + ']').html(DATA[pollId]['submission']);
       buildAllAnswers(answerType, pollId, '[data-pollr-all-answers-' + pollId + ']')
     }
@@ -223,7 +235,9 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
       var type = R.pathOr('unknown', [pollId, 'input', 'type'], POLLS);
       var question = R.pathOr('unknown', [pollId, 'question'], POLLS);
       if (value) {
-        // TODO: ... update DATA[pollId]['submissions'] with your submission...
+        var submissions = R.pathOr([], [pollId, 'submissions'], DATA);
+        DATA[pollId]['submissions'] = R.append({ value: value }, submissions);
+
         $(document).trigger('POLLR::shareSubmission', [pollId, type, question, value]);
         $(document).trigger('POLLR::submitted', [pollId]);
       } else {
@@ -271,7 +285,7 @@ var embed = function(params){
 
 var shareSubmission = function(callback){
   $(document).on('POLLR::shareSubmission', function(event, identifier, type, question, submission){
-    callback(identifier, type, question, submission);
+    callback(identifier, type, S(question).stripTags().s, submission);
   });
 };
 
