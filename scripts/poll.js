@@ -1,7 +1,7 @@
 //BROWSERIFY//////////////////////
 //////////////////////////////////
 var HELPERS = require('./helpers.js');
-var jQuery = require('jquery');
+var jQuery = $ = require('jquery');
 require('./../vendor/jquery.flip.js');
 var R = require('ramda');
 var jss = require('jss');
@@ -29,7 +29,8 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
 
   var question = R.propOr(null, 'question', poll);
   var changeType = R.propOr('standard', 'changeType', poll);
-  var answerType = R.propOr('listing', 'answerType', poll);
+  var answerType = R.pathOr('listing', ['answer', 'type'], poll);
+  var answerExpert = R.pathOr(null, ['answer', 'expert'], poll);
   var input = R.propOr(null, 'input', poll);
   var continueAction = R.propOr(null, 'continue', poll);
   var frontClass = R.compose(R.replace(/data-pollr-front/, 'data-pollr-front-' + pollId), R.pathOr('pollr-poll-front', ['markup', 'front', 'class']))(poll);
@@ -37,6 +38,7 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
   var questionHtml = R.compose(R.replace(/data-pollr-question/, 'data-pollr-question-' + pollId), R.pathOr('<p data-pollr-question></p>', ['markup', 'front', 'question']))(poll);
   var submissionHtml = R.compose(R.replace(/data-pollr-submission/, 'data-pollr-submission-' + pollId), R.pathOr('<button data-pollr-submission>Submit</button>', ['markup', 'front', 'submission']))(poll);
   var yourAnswerHtml = R.compose(R.replace(/data-pollr-your-answer/, 'data-pollr-your-answer-' + pollId), R.pathOr('<p>You chose: <span data-pollr-your-answer></span></p>', ['markup', 'back', 'yourAnswer']))(poll);
+  var expertAnswerHtml = R.compose(R.replace(/data-pollr-expert-answer/, 'data-pollr-expert-answer-' + pollId), R.pathOr('<p>The experts say: <span data-pollr-expert-answer></span></p>', ['markup', 'back', 'expertAnswer']))(poll);
   var continueHtml = R.compose(R.replace(/data-pollr-continue/, 'data-pollr-continue-' + pollId), R.pathOr('<button data-pollr-continue>Continue</button>', ['markup', 'back', 'continue']))(poll);
 
   if(!question){ console.error('Pollr: No question text.') }
@@ -139,6 +141,15 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
     }
   };
 
+  var buildExpertAnswer = function(){
+    if(answerExpert){
+      return '<div class="pollr-your-answer-section">' + expertAnswerHtml + '</div>';
+    } else {
+      return '';
+    }
+
+  };
+
   var buildAllAnswers = function(answerType, pollId, allAnswersMount){
 
     var listing = function(){
@@ -148,6 +159,10 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
 
       var answers = '<div class="pollr-all-answers"><ul class="pollr-all-answers-list">' + data.map(function(answer){ return '<li>' + answer.value + '</li>' }).join('') + '</ul></div>';
       $(allAnswersMount).html(answers);
+    };
+
+    var wordcloud = function(){
+      //TODO: add wordcloud to see responses in managable way
     };
 
     var chart = function(){
@@ -177,6 +192,8 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
     switch(answerType){
       case 'listing': return listing();
         break;
+      case 'wordcloud': return wordcould();
+        break;
       case 'chart': return chart();
         break;
       default: return (function(){
@@ -195,6 +212,7 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
   var back = '<div class="' + backClass + '">' +
       '<div class="pollr-question-section">' + questionHtml + '</div>' +
       '<div class="pollr-your-answer-section">' + yourAnswerHtml + '</div>' +
+      buildExpertAnswer() +
       '<div class="pollr-all-answers-section"><div data-pollr-all-answers-' + pollId + '></div></div>' +
       '<div class="pollr-continue-section">' + (continueAction ? continueHtml : '') + '</div>' +
       '</div>';
@@ -213,6 +231,7 @@ var embedPoll = function(mountSelector, pollId, poll, existingData){
       $(mountSelector + ' > .pollr-poll').html(back);
       $('[data-pollr-question-' + pollId + ']').html(question);
       $('[data-pollr-your-answer-' + pollId + ']').html(DATA[pollId]['submission']);
+      $('[data-pollr-expert-answer-' + pollId + ']').html(answerExpert);
       buildAllAnswers(answerType, pollId, '[data-pollr-all-answers-' + pollId + ']')
     }
   });
@@ -279,7 +298,7 @@ var embed = function(params){
   if(poll){
     embedPoll(mountSelector, pollId, poll, existingData);
   } else {
-    throw pollId + ': No poll to embed'
+    throw pollId + ': No poll to embed';
   }
 };
 

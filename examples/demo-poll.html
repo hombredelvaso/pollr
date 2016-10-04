@@ -83,7 +83,9 @@
             { value: 'Ocelot' }
           ]
         },
-        answerType: 'chart', // list
+        answer: {
+          type: 'chart' // listing
+        },
         changeType: 'standard', // standard, flip, ...
 //        continue: function(){
 //          alert('poll complete')
@@ -122,7 +124,9 @@
             { value: 'Ocelot' }
           ]
         },
-        answerType: 'chart', // list
+        answer: {
+          type: 'chart'
+        },
         changeType: 'standard', // standard, flip, ...
 //        continue: function(){
 //          alert('poll complete')
@@ -157,8 +161,16 @@
           type: 'text',
           placeholder: 'Cars...'
         },
-        answerType: 'listing',
+        answer: {
+          type: 'listing',
+          expert: 'Cars make for great driving!'
+        },
         changeType: 'standard', // flip
+        markup: {
+          back: {
+            expertAnswer: '<p>The car experts say: <span data-pollr-expert-answer></span></p>'
+          }
+        },
         continue: function(){
           alert('hi')
         }
@@ -173,7 +185,9 @@
             { element: 'a', value: 'No' }
           ]
         },
-        answerType: 'chart',
+        answer: {
+          type: 'chart'
+        },
         changeType: 'standard', // flip
         continue: function(){
           alert('hi')

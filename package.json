@@ -2,7 +2,7 @@
   "name": "pollr",
   "version": "1.0.0",
   "description": "",
-  "main": "gun-server.js",
+  "main": "src/pollr.js",
   "scripts": {
     "compile": "watchify -t browserify-css ./src/pollr.js -o ./dist/pollr.js -d",
     "test": "echo \"Error: no test specified\" && exit 1"

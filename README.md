@@ -29,8 +29,11 @@
 - init
 
 > data-pollr-question: insert text/html
+
 > data-pollr-submission: onclick
+
 > data-pollr-your-answer: insert text/html
+
 > data-pollr-continue: onclick
 
 ```javascript
