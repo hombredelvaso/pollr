@@ -25,10 +25,11 @@ var DATA = {}; // { submission: '', submissions: [] }
 // FUNCTIONALITY //
 //////////////////
 
-var mount = function(mountSelector, pollId, poll, existingData){
+var mount = function(poll, existingData){
 
   var currentPoll = poll;
-  var currentPollId = pollId;
+  var currentPollId = poll['name'];
+  var mountSelector = poll['mount'];
 
   DATA[currentPollId] = {};
   DATA[currentPollId]['submission'] = R.propOr(null, 'submission', existingData);
@@ -312,10 +313,14 @@ var embed = function(params){
   var mountSelector = params['mount'];
   var pollId = params['poll'];
   var existingData = params['data'] || {};
-  var poll = POLLS[pollId];
+  var poll = R.compose(
+    R.assoc('mount', mountSelector)
+  )(POLLS[pollId]);
+
+  POLLS[pollId] = poll;
 
   if(poll){
-    mount(mountSelector, pollId, poll, existingData);
+    mount(poll, existingData);
   } else {
     throw pollId + ': No poll to embed';
   }
