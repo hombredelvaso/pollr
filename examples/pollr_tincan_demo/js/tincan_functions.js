@@ -1,4 +1,4 @@
-$(document).on('tincan::init', function(){
+var tincanImplement = function(){
   //
   // ActivityID that is sent for the statement's object
   TC_COURSE_ID = CONFIG.information.id;
@@ -653,10 +653,6 @@ $(document).on('tincan::init', function(){
     doTracking('access_help', { courseName: courseName })
     //console.log('access_help');
   });
-});
-
-var tincanImplement = function(){
-  $(document).trigger('tincan::init');
 };
 
 var localImplement = function(){

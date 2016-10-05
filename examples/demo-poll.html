@@ -61,6 +61,39 @@
   <script src="../dist/pollr.js"></script>
   <script>
 
+    ///////////////
+    // lifecycle //
+    ///////////////
+
+    jQuery(document).on('poll::mounted', function(event, poll, polls, pollIsComplete){
+      console.log('mounted!', poll, 'is complete:', pollIsComplete);
+    });
+
+    jQuery(document).on('poll::submitted', function(event, poll, polls, identifier, type, question, submission){
+      console.log('store ' + identifier + '|' + type + '|' + question + '|' + submission + ' to tincan, localstore, etc...');
+      // $(document).trigger('tincan::polled', [ identifier, type, question, submission ]);
+    });
+
+    jQuery(document).on('poll::transition', function(event, poll, polls){
+      console.log('transitioned!', poll);
+    });
+
+    jQuery(document).on('poll::continue', function(event, poll, polls){
+      console.log('continued!', poll);
+    });
+
+    jQuery(document).on('poll::unmounted', function(event, poll, polls){
+      console.log('unmounted!', poll);
+    });
+
+    ///////////
+    // setup //
+    ///////////
+
+    Pollr.configure({
+      events: jQuery(document)
+    });
+
     Pollr.init({
       'poll-1-version-1': {
         name: 'Poll 1',
@@ -193,11 +226,6 @@
           alert('hi')
         }
       }
-    });
-
-    Pollr.onSubmission(function(identifier, type, question, submission){
-      console.log('store ' + identifier + '|' + type + '|' + question + '|' + submission + ' to tincan, localstore, etc...');
-      // $(document).trigger('tincan::polled', [ identifier, type, question, submission ]);
     });
 
     var getData = function(identifier, callback){

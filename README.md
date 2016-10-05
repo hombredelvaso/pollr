@@ -94,3 +94,13 @@ getData('poll-1-version-1', function(data){
   Pollr.embed({ poll: 'poll-1-version-1', mount: '#yesno-poll', data: data });
 });
 ```
+
+- lifecycle
+
+```
+poll::mounted
+poll::unmounted
+poll::submitted
+poll::transition
+poll::continue
+```

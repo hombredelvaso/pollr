@@ -31,6 +31,11 @@
   <script src="js/tincan_functions.js"></script>
   <script src="js/pollr.js"></script>
   <script>
+
+    Pollr.configure({
+      events: jQuery(document)
+    });
+
     Pollr.init({
       'poll-1-version-1': {
         name: 'Poll 1',
@@ -53,7 +58,9 @@
             { value: 'Ocelot' }
           ]
         },
-        answerType: 'chart', // list
+        answer: {
+          type: 'chart'
+        },
         changeType: 'standard', // standard, flip, ...
 //        continue: function(){
 //          alert('poll complete')
@@ -78,7 +85,9 @@
           type: 'text',
           placeholder: 'Type here...'
         },
-        answerType: 'listing',
+        answer: {
+          type: 'listing'
+        },
         changeType: 'standard'
       },
       'poll-3-version-1': {
@@ -88,7 +97,9 @@
           type: 'text',
           placeholder: 'Cars...'
         },
-        answerType: 'listing',
+        answer: {
+          type: 'listing'
+        },
         changeType: 'standard', // flip
         continue: function(){
           alert('hi')
@@ -104,7 +115,9 @@
             { element: 'a', value: 'No' }
           ]
         },
-        answerType: 'chart',
+        answer: {
+          type: 'chart'
+        },
         changeType: 'standard', // flip
         continue: function(){
           alert('hi')
@@ -112,11 +125,11 @@
       }
     });
 
-    $(document).on('courseReady', function(){
+    jQuery(document).on('poll::submitted', function(event, poll, polls, identifier, type, question, submission){
+      $(document).trigger('tincan::polled', [ identifier, type, question, submission ]);
+    });
 
-      Pollr.onSubmission(function(identifier, type, question, submission){
-        $(document).trigger('tincan::polled', [ identifier, type, question, submission ]);
-      });
+    $(document).on('courseReady', function(){
 
       $(document).trigger('tincan::getPollData', ['poll-1-version-1', function(data){
         Pollr.embed({ poll: 'poll-1-version-1', mount: '#test-poll-1', data: data });
