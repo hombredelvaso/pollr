@@ -175,6 +175,9 @@
             yourAnswer: '<p>You chose: <span data-pollr-your-answer></span></p>',
             continue: '<button data-pollr-continue>Continue</button>'
           }
+        },
+        undecided: function(){
+          alert('you MUST choose');
         }
       },
       'poll-2-version-1': {
@@ -184,8 +187,13 @@
           type: 'text',
           placeholder: 'Type here...'
         },
-        answerType: 'listing',
-        changeType: 'standard'
+        answer: {
+          type: 'listing'
+        },
+        changeType: 'standard',
+        undecided: function(){
+          alert('please choose an answer before submitting')
+        }
       },
       'poll-3-version-1': {
         name: 'Poll 3',
@@ -205,7 +213,7 @@
           }
         },
         continue: function(){
-          alert('hi')
+          alert('hi');
         }
       },
       'poll-4-version-1': {

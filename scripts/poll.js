@@ -1,7 +1,7 @@
 //BROWSERIFY//////////////////////
 //////////////////////////////////
 var HELPERS = require('./helpers.js');
-var jQuery = $ = require('jquery');
+var jQuery = require('jquery');
 require('./../vendor/jquery.flip.js');
 var R = require('ramda');
 var jss = require('jss');
@@ -40,6 +40,7 @@ var mount = function(poll, existingData){
   var answerType = R.pathOr('listing', ['answer', 'type'], currentPoll);
   var answerExpert = R.pathOr(null, ['answer', 'expert'], currentPoll);
   var input = R.propOr(null, 'input', currentPoll);
+  var undecidedAction = R.propOr(null, 'undecided', currentPoll);
   var continueAction = R.propOr(null, 'continue', currentPoll);
   var frontClass = R.compose(R.replace(/data-pollr-front/, 'data-pollr-front-' + currentPollId), R.pathOr('pollr-poll-front', ['markup', 'front', 'class']))(currentPoll);
   var backClass = R.compose(R.replace(/data-pollr-back/, 'data-pollr-back-' + currentPollId), R.pathOr('pollr-poll-back', ['markup', 'back', 'class']))(currentPoll);
@@ -258,20 +259,24 @@ var mount = function(poll, existingData){
 
   $(document).on('POLLR::submission', function(event, id){
     if(currentPollId === id) {
-      var value = R.pathOr('unknown', [currentPollId, 'submission'], DATA);
+      var value = R.pathOr('undecided', [currentPollId, 'submission'], DATA);
       var type = R.pathOr('unknown', [currentPollId, 'input', 'type'], POLLS);
       var question = R.pathOr('unknown', [currentPollId, 'question'], POLLS);
-      if (value) {
+
+      if(R.and(R.equals('undecided', value), R.is(Function, undecidedAction))){
+
+        undecidedAction();
+
+      } else {
         var submissions = R.pathOr([], [currentPollId, 'submissions'], DATA);
+
+        DATA[currentPollId]['submission'] = value;
+
         DATA[currentPollId]['submissions'] = R.append({ value: value }, submissions);
 
         CONFIG.events.trigger('poll::submitted', [ currentPoll, POLLS, currentPollId, type, S(question).stripTags().s, value ]);
 
         $(document).trigger('POLLR::submitted', [ currentPollId ]);
-
-      } else {
-        //TODO: make this configurable... if required, choose method of blocking, if not... find way to get default information or NOT submit?
-        alert('need to answer');
       }
     }
   });
@@ -303,7 +308,7 @@ var mount = function(poll, existingData){
 
 };
 
-//TODO: figure out unmount logic... decide to refactor vidr to allow for mount in embed, or to change this to have mount in init...
+//TODO: figure out unmount logic... export method OR message? do same in vidr
 var unmount = function(poll){
 
   CONFIG.events.trigger('poll::unmounted', [ poll, POLLS ]);
