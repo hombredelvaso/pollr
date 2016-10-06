@@ -2,6 +2,7 @@
 //////////////////////////////////
 var HELPERS = require('./helpers.js');
 var jQuery = require('jquery');
+var $ = jQuery;
 require('./../vendor/jquery.flip.js');
 var R = require('ramda');
 var jss = require('jss');
@@ -48,6 +49,7 @@ var mount = function(poll, existingData){
   var submissionHtml = R.compose(R.replace(/data-pollr-submission/, 'data-pollr-submission-' + currentPollId), R.pathOr('<button data-pollr-submission>Submit</button>', ['markup', 'front', 'submission']))(currentPoll);
   var yourAnswerHtml = R.compose(R.replace(/data-pollr-your-answer/, 'data-pollr-your-answer-' + currentPollId), R.pathOr('<p>You chose: <span data-pollr-your-answer></span></p>', ['markup', 'back', 'yourAnswer']))(currentPoll);
   var expertAnswerHtml = R.compose(R.replace(/data-pollr-expert-answer/, 'data-pollr-expert-answer-' + currentPollId), R.pathOr('<p>The experts say: <span data-pollr-expert-answer></span></p>', ['markup', 'back', 'expertAnswer']))(currentPoll);
+  var allAnswersListClasses = R.pathOr({}, ['markup', 'back', 'allAnswersListClasses'])(currentPoll);
   var continueHtml = R.compose(R.replace(/data-pollr-continue/, 'data-pollr-continue-' + currentPollId), R.pathOr('<button data-pollr-continue>Continue</button>', ['markup', 'back', 'continue']))(currentPoll);
 
   if(!question){ console.error('Pollr: No question text.') }
@@ -172,7 +174,10 @@ var mount = function(poll, existingData){
           R.pathOr([], [pollId, 'submissions'])
       )(DATA);
 
-      var answers = '<div class="pollr-all-answers"><ul class="pollr-all-answers-list">' + data.map(function(answer){ return '<li>' + answer.value + '</li>' }).join('') + '</ul></div>';
+      var allClasses = R.propOr('', 'all', allAnswersListClasses);
+      var eachClasses= R.propOr('', 'each', allAnswersListClasses);
+
+      var answers = '<div class="pollr-all-answers"><ul class="pollr-all-answers-list ' + allClasses + '">' + data.map(function(answer){ return '<li class="' + eachClasses + '">' + answer.value + '</li>' }).join('') + '</ul></div>';
       $(allAnswersMount).html(answers);
     };
 

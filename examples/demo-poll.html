@@ -38,6 +38,18 @@
     display: block;
   }
 
+  .thin {
+    font-weight: 200;
+  }
+
+  .antiquecolor {
+    color: antiquewhite;
+  }
+
+  .overline {
+    text-decoration: overline;
+  }
+
 </style>
 </head>
 <body>
@@ -209,7 +221,11 @@
         changeType: 'standard', // flip
         markup: {
           back: {
-            expertAnswer: '<p>The car experts say: <span data-pollr-expert-answer></span></p>'
+            expertAnswer: '<p>The car experts say: <span data-pollr-expert-answer></span></p>',
+            allAnswersListClasses: {
+              all: 'thin',
+              each: 'antiquecolor overline'
+            }
           }
         },
         continue: function(){
