@@ -174,10 +174,10 @@ var mount = function(poll, existingData){
           R.pathOr([], [pollId, 'submissions'])
       )(DATA);
 
-      var allClasses = R.propOr('', 'all', allAnswersListClasses);
-      var eachClasses= R.propOr('', 'each', allAnswersListClasses);
+      var ulClasses = R.propOr('', 'ul', allAnswersListClasses);
+      var liClasses= R.propOr('', 'li', allAnswersListClasses);
 
-      var answers = '<div class="pollr-all-answers"><ul class="pollr-all-answers-list ' + allClasses + '">' + data.map(function(answer){ return '<li class="' + eachClasses + '">' + answer.value + '</li>' }).join('') + '</ul></div>';
+      var answers = '<div class="pollr-all-answers"><ul class="pollr-all-answers-list ' + ulClasses + '">' + data.map(function(answer){ return '<li class="' + liClasses + '">' + answer.value + '</li>' }).join('') + '</ul></div>';
       $(allAnswersMount).html(answers);
     };
 
