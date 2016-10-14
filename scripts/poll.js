@@ -43,13 +43,17 @@ var mount = function(poll, existingData){
   var input = R.propOr(null, 'input', currentPoll);
   var undecidedAction = R.propOr(null, 'undecided', currentPoll);
   var continueAction = R.propOr(null, 'continue', currentPoll);
+  var peerAnswersLimit = R.pathOr(null, ['answer', 'limit'], currentPoll);
+  var answerChartOptions = R.pathOr({}, ['answer', 'options'], currentPoll);
+  var answerChartClasses = R.pathOr({}, ['answer', 'classes'], currentPoll);
   var frontClass = R.compose(R.replace(/data-pollr-front/, 'data-pollr-front-' + currentPollId), R.pathOr('pollr-poll-front', ['markup', 'front', 'class']))(currentPoll);
   var backClass = R.compose(R.replace(/data-pollr-back/, 'data-pollr-back-' + currentPollId), R.pathOr('pollr-poll-back', ['markup', 'back', 'class']))(currentPoll);
   var questionHtml = R.compose(R.replace(/data-pollr-question/, 'data-pollr-question-' + currentPollId), R.pathOr('<p data-pollr-question></p>', ['markup', 'front', 'question']))(currentPoll);
   var submissionHtml = R.compose(R.replace(/data-pollr-submission/, 'data-pollr-submission-' + currentPollId), R.pathOr('<button data-pollr-submission>Submit</button>', ['markup', 'front', 'submission']))(currentPoll);
   var yourAnswerHtml = R.compose(R.replace(/data-pollr-your-answer/, 'data-pollr-your-answer-' + currentPollId), R.pathOr('<p>You chose: <span data-pollr-your-answer></span></p>', ['markup', 'back', 'yourAnswer']))(currentPoll);
   var expertAnswerHtml = R.compose(R.replace(/data-pollr-expert-answer/, 'data-pollr-expert-answer-' + currentPollId), R.pathOr('<p>The experts say: <span data-pollr-expert-answer></span></p>', ['markup', 'back', 'expertAnswer']))(currentPoll);
-  var allAnswersListClasses = R.pathOr({}, ['markup', 'back', 'allAnswersListClasses'])(currentPoll);
+  var peerAnswersHtml = R.compose(R.replace(/data-pollr-peer-answers/, 'data-pollr-peer-answers-' + currentPollId), R.pathOr('<p>Your peers say: <div data-pollr-peer-answers></div></p>', ['markup', 'back', 'peerAnswers', 'markup']))(currentPoll);
+  var peerAnswersClasses = R.pathOr({}, ['markup', 'back', 'peerAnswers', 'classes'])(currentPoll);
   var continueHtml = R.compose(R.replace(/data-pollr-continue/, 'data-pollr-continue-' + currentPollId), R.pathOr('<button data-pollr-continue>Continue</button>', ['markup', 'back', 'continue']))(currentPoll);
 
   if(!question){ console.error('Pollr: No question text.') }
@@ -160,25 +164,26 @@ var mount = function(poll, existingData){
 
   var buildExpertAnswer = function(){
     if(answerExpert){
-      return '<div class="pollr-your-answer-section">' + expertAnswerHtml + '</div>';
+      return '<div class="pollr-expert-answer-section">' + expertAnswerHtml + '</div>';
     } else {
       return '';
     }
 
   };
 
-  var buildAllAnswers = function(answerType, pollId, allAnswersMount){
+  var buildPeerAnswers = function(answerType, pollId, peerAnswersMount){
 
     var listing = function(){
       var data = R.compose(
           R.pathOr([], [pollId, 'submissions'])
       )(DATA);
 
-      var ulClasses = R.propOr('', 'ul', allAnswersListClasses);
-      var liClasses= R.propOr('', 'li', allAnswersListClasses);
+      var ulClasses = R.propOr('', 'ul', peerAnswersClasses);
+      var liClasses= R.propOr('', 'li', peerAnswersClasses);
 
-      var answers = '<div class="pollr-all-answers"><ul class="pollr-all-answers-list ' + ulClasses + '">' + data.map(function(answer){ return '<li class="' + liClasses + '">' + answer.value + '</li>' }).join('') + '</ul></div>';
-      $(allAnswersMount).html(answers);
+      var answers = '<div class="pollr-peer-answers"><ul class="pollr-peer-answers-list ' + ulClasses + '">' + R.compose(R.join(''), R.map(function(answer){ return '<li class="' + liClasses + '">' + answer.value + '</li>' }), R.take((peerAnswersLimit || R.length(data))))(data) + '</ul></div>';
+
+      $(peerAnswersMount).html(answers);
     };
 
     var wordcloud = function(){
@@ -186,9 +191,9 @@ var mount = function(poll, existingData){
     };
 
     var chart = function(){
-      var id = 'pollr-' + HELPERS.generateUUID();
+      var id = 'pollr-peer-answers-chart' + HELPERS.generateUUID();
 
-      $(allAnswersMount).html('<div class="pollr-all-answers"><div id="' + id + '" class="pollr-all-answers-chart"></div></div>');
+      $(peerAnswersMount).html('<div class="pollr-peer-answers"><div id="' + id + '" class="pollr-peer-answers-chart"></div></div>');
 
       var data = R.compose(
         R.groupBy(R.prop('value')),
@@ -199,12 +204,64 @@ var mount = function(poll, existingData){
         labels: R.keys(data),
         series: R.compose(R.append(R.__, []), R.map(R.length), R.values)(data)
       }, {
-        seriesBarDistance: 10,
-        reverseData: true,
-        horizontalBars: true,
-        axisY: {
-          offset: 70
-        }
+        seriesBarDistance: R.propOr(10, 'seriesBarDistance', answerChartOptions),
+        horizontalBars: R.propOr(true, 'isHorizontal', answerChartOptions),
+        axisY: R.ifElse(
+          R.isNil,
+          R.always({
+            //offset: 0
+            //type: Chartist.AutoScaleAxis,
+            //low: 0,
+            //high: 1000,
+            //onlyInteger: true
+          }),
+          function(){
+
+            var options = [
+              { type: R.compose(R.ifElse(R.equals('autoscale'), R.always(Chartist.AutoScaleAxis), R.always(null)), R.pathOr(null, ['yaxis', 'type']))(answerChartOptions) },
+              { onlyInteger: R.pathOr(null, ['yaxis', 'onlyInteger'], answerChartOptions) },
+              { offset: R.pathOr(null, ['yaxis', 'offset'], answerChartOptions) },
+              { high: R.pathOr(null, ['yaxis', 'high'], answerChartOptions) },
+              { low: R.pathOr(null, ['yaxis', 'low'], answerChartOptions) }
+            ];
+
+            return R.compose(R.mergeAll, R.filter(R.compose(R.not, R.isNil, R.head, R.values)))(options);
+          }
+        )(answerChartOptions.yaxis),
+        axisX: R.ifElse(
+          R.isNil,
+          R.always({
+            //offset: 0
+            //type: Chartist.AutoScaleAxis,
+            //low: 0,
+            //high: 1000,
+            //onlyInteger: true
+          }),
+          function(){
+
+            var options = [
+              { type: R.compose(R.ifElse(R.equals('autoscale'), R.always(Chartist.AutoScaleAxis), R.always(null)), R.pathOr(null, ['xaxis', 'type']))(answerChartOptions) },
+              { onlyInteger: R.pathOr(null, ['xaxis', 'onlyInteger'], answerChartOptions) },
+              { offset: R.pathOr(null, ['xaxis', 'offset'], answerChartOptions) },
+              { high: R.pathOr(null, ['xaxis', 'high'], answerChartOptions) },
+              { low: R.pathOr(null, ['xaxis', 'low'], answerChartOptions) }
+            ];
+
+            return R.compose(R.mergeAll, R.filter(R.compose(R.not, R.isNil, R.head, R.values)))(options);
+          }
+        )(answerChartOptions.xaxis)
+      });
+
+      _chart.on('created', function(data){
+
+        $('#' + id + ' .ct-grid').each(function(index, element){ $(element).addClass( R.propOr('', 'grid', answerChartClasses) ) });
+        $('#' + id + ' .ct-grid.ct-horizontal').each(function(index, element){ $(element).addClass( R.propOr('', 'gridHorizontal', answerChartClasses) ) });
+        $('#' + id + ' .ct-grid.ct-vertical').each(function(index, element){ $(element).addClass( R.propOr('', 'gridVertical', answerChartClasses) ) });
+        $('#' + id + ' .ct-bar').each(function(index, element){ $(element).addClass( R.propOr('', 'bar', answerChartClasses) ) });
+        $('#' + id + ' .ct-label').each(function(index, element){ $(element).addClass( R.propOr('', 'label', answerChartClasses) ) });
+        $('#' + id + ' .ct-label.ct-horizontal').each(function(index, element){ $(element).addClass( R.propOr('', 'labelHorizontal', answerChartClasses) ) });
+        $('#' + id + ' .ct-label.ct-vertical').each(function(index, element){ $(element).addClass( R.propOr('', 'labelVertical', answerChartClasses) ) });
+
       });
 
     };
@@ -233,7 +290,7 @@ var mount = function(poll, existingData){
       '<div class="pollr-question-section">' + questionHtml + '</div>' +
       '<div class="pollr-your-answer-section">' + yourAnswerHtml + '</div>' +
       buildExpertAnswer() +
-      '<div class="pollr-all-answers-section"><div data-pollr-all-answers-' + currentPollId + '></div></div>' +
+      '<div class="pollr-peer-answers-section">' + peerAnswersHtml + '</div>' +
       '<div class="pollr-continue-section">' + (continueAction ? continueHtml : '') + '</div>' +
       '</div>';
 
@@ -252,7 +309,7 @@ var mount = function(poll, existingData){
       $('[data-pollr-question-' + currentPollId + ']').html(question);
       $('[data-pollr-your-answer-' + currentPollId + ']').html(DATA[currentPollId]['submission']);
       $('[data-pollr-expert-answer-' + currentPollId + ']').html(answerExpert);
-      buildAllAnswers(answerType, currentPollId, '[data-pollr-all-answers-' + currentPollId + ']')
+      buildPeerAnswers(answerType, currentPollId, '[data-pollr-peer-answers-' + currentPollId + ']')
     }
   });
 

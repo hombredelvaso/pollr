@@ -50,6 +50,37 @@
     text-decoration: overline;
   }
 
+  .poll-grid {
+
+  }
+
+  .poll-grid-horiz {
+    stroke: rgba(0, 0, 0, 0.4) !important;
+    stroke-width: 3px !important;
+  }
+
+  .poll-grid-vert {
+    stroke: #563203 !important;
+    stroke-dasharray: 4px !important;
+    stroke-dashoffset: 10px !important;
+  }
+
+  .poll-bar {
+
+  }
+
+  .poll-label {
+    color: yellow !important;
+  }
+
+  .poll-label-horiz {
+    font-size: 0.95rem !important;
+  }
+
+  .poll-label-vert {
+    font-size: 0.35rem !important;
+  }
+
 </style>
 </head>
 <body>
@@ -129,7 +160,27 @@
           ]
         },
         answer: {
-          type: 'chart' // listing
+          type: 'chart', // listing
+          options: {
+            isHorizontal: true,
+            yaxis: {
+              offset: 70
+            },
+            xaxis: {
+              type: 'autoscale',
+              offset: 40,
+              onlyInteger: true
+            }
+          },
+          classes: {
+            grid: 'poll-grid',
+            gridHorizontal: 'poll-grid-horiz',
+            gridVertical: 'poll-grid-vert',
+            bar: 'poll-bar',
+            label: 'poll-label',
+            labelHorizontal: 'poll-lable-horiz',
+            labelVertical: 'poll-label-vert'
+          }
         },
         changeType: 'standard', // standard, flip, ...
 //        continue: function(){
@@ -216,15 +267,19 @@
         },
         answer: {
           type: 'listing',
-          expert: 'Cars make for great driving!'
+          expert: 'Cars make for great driving!',
+          limit: 3
         },
         changeType: 'standard', // flip
         markup: {
           back: {
             expertAnswer: '<p>The car experts say: <span data-pollr-expert-answer></span></p>',
-            allAnswersListClasses: {
-              ul: 'thin',
-              li: 'antiquecolor overline'
+            peerAnswers: {
+              markup: '<p>Your car loving peers say: <div data-pollr-peer-answers></div></p>',
+              classes: {
+                ul: 'thin',
+                li: 'antiquecolor overline'
+              }
             }
           }
         },
@@ -267,9 +322,9 @@
 
         var theirdata = {
           'poll-1-version-1': [{ value: 'Zebra' }, { value: 'Ocelot' }, { value: 'Orangutan' }, { value: 'Orangutan' }, { value: 'Orangutan' }],
-          'poll-1-version-2': [{ value: 'Zebra' }, { value: 'Ocelot' }, { value: 'Orangutan' }, { value: 'Zebra' }, { value: 'Zebra' },  { value: 'Orangutan' }],
+          'poll-1-version-2': [],
           'poll-2-version-1': [{ value: 'I like this' }, { value: 'This is ok...' }, { value: 'It sucks.' }],
-          'poll-3-version-1': [],
+          'poll-3-version-1': [{ value: 'Mustangs!' }, { value: 'Taurus...' }, { value: 'Sable.' }, { value: 'Corvette' }],
           'poll-4-version-1': [{ value: 'Yes' }, { value: 'Yes' }, { value: 'No' }, { value: 'No' }, { value: 'No' }, { value: 'No' }]
         };
 
