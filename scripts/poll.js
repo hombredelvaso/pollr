@@ -41,8 +41,7 @@ var mount = function(poll, existingData){
   var answerType = R.pathOr('listing', ['answer', 'type'], currentPoll);
   var answerExpert = R.pathOr(null, ['answer', 'expert'], currentPoll);
   var input = R.propOr(null, 'input', currentPoll);
-  var undecidedAction = R.propOr(null, 'undecided', currentPoll);
-  var continueAction = R.propOr(null, 'continue', currentPoll);
+  var actions = R.propOr({}, 'actions', currentPoll);
   var peerAnswersLimit = R.pathOr(null, ['answer', 'limit'], currentPoll);
   var answerChartOptions = R.pathOr({}, ['answer', 'options'], currentPoll);
   var answerChartClasses = R.pathOr({}, ['answer', 'classes'], currentPoll);
@@ -186,6 +185,19 @@ var mount = function(poll, existingData){
       $(peerAnswersMount).html(answers);
     };
 
+    //var table = function(){
+    //  var data = R.compose(
+    //      R.pathOr([], [pollId, 'submissions'])
+    //  )(DATA);
+    //
+    //  var ulClasses = R.propOr('', 'ul', peerAnswersClasses);
+    //  var liClasses= R.propOr('', 'li', peerAnswersClasses);
+    //
+    //  var answers = '<div class="pollr-peer-answers"><ul class="pollr-peer-answers-list ' + ulClasses + '">' + R.compose(R.join(''), R.map(function(answer){ return '<li class="' + liClasses + '">' + answer.value + '</li>' }), R.take((peerAnswersLimit || R.length(data))))(data) + '</ul></div>';
+    //
+    //  $(peerAnswersMount).html(answers);
+    //};
+
     var wordcloud = function(){
       //TODO: add wordcloud to see responses in managable way
     };
@@ -291,7 +303,7 @@ var mount = function(poll, existingData){
       '<div class="pollr-your-answer-section">' + yourAnswerHtml + '</div>' +
       buildExpertAnswer() +
       '<div class="pollr-peer-answers-section">' + peerAnswersHtml + '</div>' +
-      '<div class="pollr-continue-section">' + (continueAction ? continueHtml : '') + '</div>' +
+      '<div class="pollr-continue-section">' + (R.propOr(null, 'continue', actions) ? continueHtml : '') + '</div>' +
       '</div>';
 
   $(mountSelector).html('<div class="pollr-poll" data-pollr-poll-' + currentPollId + '></div>');
@@ -324,6 +336,8 @@ var mount = function(poll, existingData){
       var value = R.pathOr('undecided', [currentPollId, 'submission'], DATA);
       var type = R.pathOr('unknown', [currentPollId, 'input', 'type'], POLLS);
       var question = R.pathOr('unknown', [currentPollId, 'question'], POLLS);
+
+      var undecidedAction = R.propOr(null, 'undecided', actions);
 
       if(R.and(R.equals('undecided', value), R.is(Function, undecidedAction))){
 
@@ -364,6 +378,7 @@ var mount = function(poll, existingData){
   });
 
   $(document).on('click', '[data-pollr-continue-' + currentPollId + ']', function(event){
+    var continueAction = R.propOr(function(){}, 'continue', actions);
     continueAction();
     CONFIG.events.trigger('poll::continue', [ currentPoll, POLLS ]);
   });
@@ -379,8 +394,14 @@ var unmount = function(poll){
 var embed = function(params){
   var mountSelector = params['mount'];
   var pollId = params['poll'];
+  var actions = params['actions'];
   var existingData = params['data'] || {};
   var poll = R.compose(
+    R.ifElse(
+      R.propIs(Object, 'actions'),
+      R.evolve({ actions: R.merge(R.__, actions) }),
+      R.assoc('actions', actions)
+    ),
     R.assoc('mount', mountSelector)
   )(POLLS[pollId]);
 

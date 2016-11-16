@@ -178,7 +178,7 @@
             gridVertical: 'poll-grid-vert',
             bar: 'poll-bar',
             label: 'poll-label',
-            labelHorizontal: 'poll-lable-horiz',
+            labelHorizontal: 'poll-label-horiz',
             labelVertical: 'poll-label-vert'
           }
         },
@@ -239,8 +239,10 @@
             continue: '<button data-pollr-continue>Continue</button>'
           }
         },
-        undecided: function(){
-          alert('you MUST choose');
+        actions: {
+          'undecided': function(){
+            alert('you MUST choose');
+          }
         }
       },
       'poll-2-version-1': {
@@ -254,8 +256,10 @@
           type: 'listing'
         },
         changeType: 'standard',
-        undecided: function(){
-          alert('please choose an answer before submitting')
+        actions: {
+          'undecided': function(){
+            alert('please choose an answer before submitting');
+          }
         }
       },
       'poll-3-version-1': {
@@ -283,8 +287,10 @@
             }
           }
         },
-        continue: function(){
-          alert('hi');
+        actions: {
+          'continue': function(){
+            alert('hi');
+          }
         }
       },
       'poll-4-version-1': {
@@ -300,10 +306,7 @@
         answer: {
           type: 'chart'
         },
-        changeType: 'standard', // flip
-        continue: function(){
-          alert('hi')
-        }
+        changeType: 'standard' // flip
       }
     });
 
@@ -358,7 +361,7 @@
     });
 
     getData('poll-4-version-1', function(data) {
-      Pollr.embed({poll: 'poll-4-version-1', mount: '#button-poll', data: data });
+      Pollr.embed({poll: 'poll-4-version-1', mount: '#button-poll', data: data, actions: { 'continue': function(){ alert('yug') } } });
     });
 
   </script>
