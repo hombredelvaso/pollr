@@ -32,9 +32,21 @@ var HELPERS = (function(){
         .replace(/-+$/, '');            // Trim - from end of text
   };
 
+  // listen
+  // 'clear existing then add new event listener; so that it can be called multiple times without duplicating handling'
+  // example use:
+
+  // listen($(document), 'click', '#example', function(){ ... })
+
+  var listen = function(source, event, target, callback){
+    source.off(event, target);
+    source.on(event, target, callback);
+  };
+
   return {
     generateUUID: generateUUID,
-    slugify: slugify
+    slugify: slugify,
+    listen: listen
   }
 
 }());

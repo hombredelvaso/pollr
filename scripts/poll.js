@@ -11,6 +11,8 @@ var S = require('string');
 //////////////////////////////////
 //////////////////////////////////
 
+HELPERS.listen($(document), '', '', function(event){});
+
 ///////////
 // DATA //
 /////////
@@ -20,21 +22,22 @@ var CONFIG = {
 };
 
 var POLLS = {};
-var DATA = {}; // { submission: '', submissions: [] }
+var STATE = {}; // { submission: '', submissions: [] }
+
+//window._pollr = {
+//  getPolls: function(){ return POLLS },
+//  getState: function(){ return STATE }
+//};
 
 ////////////////////
 // FUNCTIONALITY //
 //////////////////
 
-var mount = function(poll, existingData){
+var mount = function(poll){
 
   var currentPoll = poll;
-  var currentPollId = poll['name'];
+  var currentPollId = poll['id'];
   var mountSelector = poll['mount'];
-
-  DATA[currentPollId] = {};
-  DATA[currentPollId]['submission'] = R.propOr(null, 'submission', existingData);
-  DATA[currentPollId]['submissions'] = R.propOr([], 'submissions', existingData);
 
   var question = R.propOr(null, 'question', currentPoll);
   var changeType = R.propOr('standard', 'changeType', currentPoll);
@@ -73,11 +76,11 @@ var mount = function(poll, existingData){
   /** input -> pollId -> HTML (sideeffect: set delegated events) **/
   var buildInputHtmlAndBehavior = function(input, pollId){
     var tempStoreSubmission = function(submission){
-      DATA[pollId]['submission'] = submission;
+      STATE[pollId]['submission'] = submission;
     };
 
     var radio = function(){
-      $(document).on('click', '#pollr-input-' + pollId + ' > label', function(e){
+      HELPERS.listen($(document), 'click', '#pollr-input-' + pollId + ' > label', function(e){
         var $target = $(e.target);
         if($target.prop('type') === 'radio'){ tempStoreSubmission($target.val()); }
       });
@@ -86,7 +89,7 @@ var mount = function(poll, existingData){
     };
 
     var text = function(){
-      $(document).on('keyup', '#pollr-input-' + pollId, function(e){
+      HELPERS.listen($(document), 'keyup', '#pollr-input-' + pollId, function(e){
         var $target = $(e.target);
         tempStoreSubmission(R.trim($target.val()));
       });
@@ -95,7 +98,7 @@ var mount = function(poll, existingData){
     };
 
     var button = function(){
-      $(document).on('click', '#pollr-input-' + pollId + ' > .pollr-poll-button', function(e){
+      HELPERS.listen($(document), 'click', '#pollr-input-' + pollId + ' > .pollr-poll-button', function(e){
         var $target = $(e.target);
         tempStoreSubmission($target.attr('value'));
         $(document).trigger('POLLR::submission', [pollId]);
@@ -175,7 +178,7 @@ var mount = function(poll, existingData){
     var listing = function(){
       var data = R.compose(
           R.pathOr([], [pollId, 'submissions'])
-      )(DATA);
+      )(STATE);
 
       var ulClasses = R.propOr('', 'ul', peerAnswersClasses);
       var liClasses= R.propOr('', 'li', peerAnswersClasses);
@@ -188,7 +191,7 @@ var mount = function(poll, existingData){
     //var table = function(){
     //  var data = R.compose(
     //      R.pathOr([], [pollId, 'submissions'])
-    //  )(DATA);
+    //  )(STATE);
     //
     //  var ulClasses = R.propOr('', 'ul', peerAnswersClasses);
     //  var liClasses= R.propOr('', 'li', peerAnswersClasses);
@@ -210,7 +213,7 @@ var mount = function(poll, existingData){
       var data = R.compose(
         R.groupBy(R.prop('value')),
         R.pathOr([], [pollId, 'submissions'])
-      )(DATA);
+      )(STATE);
 
       var _chart = new Chartist.Bar('#' + id, {
         labels: R.keys(data),
@@ -308,32 +311,32 @@ var mount = function(poll, existingData){
 
   $(mountSelector).html('<div class="pollr-poll" data-pollr-poll-' + currentPollId + '></div>');
 
-  $(document).on('POLLR::drawFront', function(event, id){
+  HELPERS.listen($(document), 'POLLR::drawFront', document, function(event, id){
     if(currentPollId === id){
       $(mountSelector + '> .pollr-poll').html(front);
       $('[data-pollr-question-' + currentPollId + ']').html(question);
     }
   });
 
-  $(document).on('POLLR::drawBack', function(event, id){
+  HELPERS.listen($(document), 'POLLR::drawBack', document, function(event, id){
     if(currentPollId === id){
       $(mountSelector + ' > .pollr-poll').html(back);
       $('[data-pollr-question-' + currentPollId + ']').html(question);
-      $('[data-pollr-your-answer-' + currentPollId + ']').html(DATA[currentPollId]['submission']);
+      $('[data-pollr-your-answer-' + currentPollId + ']').html(STATE[currentPollId]['submission']);
       $('[data-pollr-expert-answer-' + currentPollId + ']').html(answerExpert);
       buildPeerAnswers(answerType, currentPollId, '[data-pollr-peer-answers-' + currentPollId + ']')
     }
   });
 
-  $(document).on('POLLR::submitted', function(event, id){
+  HELPERS.listen($(document), 'POLLR::submitted', document, function(event, id){
     if(currentPollId === id){
       pollTransition(changeType, currentPollId)
     }
   });
 
-  $(document).on('POLLR::submission', function(event, id){
+  HELPERS.listen($(document), 'POLLR::submission', document, function(event, id){
     if(currentPollId === id) {
-      var value = R.pathOr('undecided', [currentPollId, 'submission'], DATA);
+      var value = R.pathOr('undecided', [currentPollId, 'submission'], STATE);
       var type = R.pathOr('unknown', [currentPollId, 'input', 'type'], POLLS);
       var question = R.pathOr('unknown', [currentPollId, 'question'], POLLS);
 
@@ -344,11 +347,11 @@ var mount = function(poll, existingData){
         undecidedAction();
 
       } else {
-        var submissions = R.pathOr([], [currentPollId, 'submissions'], DATA);
+        var submissions = R.pathOr([], [currentPollId, 'submissions'], STATE);
 
-        DATA[currentPollId]['submission'] = value;
+        STATE[currentPollId]['submission'] = value;
 
-        DATA[currentPollId]['submissions'] = R.append({ value: value }, submissions);
+        STATE[currentPollId]['submissions'] = R.append({ value: value }, submissions);
 
         CONFIG.events.trigger('poll::submitted', [ currentPoll, POLLS, currentPollId, type, S(question).stripTags().s, value ]);
 
@@ -361,7 +364,7 @@ var mount = function(poll, existingData){
   // init //
   /////////
 
-  if(DATA[currentPollId]['submission']){
+  if(STATE[currentPollId]['submission']){
     $(document).trigger('POLLR::drawBack', [currentPollId]);
     CONFIG.events.trigger('poll::mounted', [ currentPoll, POLLS, true ]);
   } else {
@@ -373,23 +376,22 @@ var mount = function(poll, existingData){
   // events //
   ///////////
 
-  $(document).on('click', '[data-pollr-submission-' + currentPollId + ']', function(event){
+  HELPERS.listen($(document), 'click', '[data-pollr-submission-' + currentPollId + ']', function(event){
     $(document).trigger('POLLR::submission', [currentPollId]);
   });
 
-  $(document).on('click', '[data-pollr-continue-' + currentPollId + ']', function(event){
+  HELPERS.listen($(document), 'click', '[data-pollr-continue-' + currentPollId + ']', function(event){
     var continueAction = R.propOr(function(){}, 'continue', actions);
     continueAction();
     CONFIG.events.trigger('poll::continue', [ currentPoll, POLLS ]);
-  });
+  })
 
 };
 
 //TODO: figure out unmount logic... export method OR message? do same in vidr
-var unmount = function(poll){
-
-  CONFIG.events.trigger('poll::unmounted', [ poll, POLLS ]);
-};
+//var unmount = function(poll){
+//  CONFIG.events.trigger('poll::unmounted', [ poll, POLLS ]);
+//};
 
 var embed = function(params){
   var mountSelector = params['mount'];
@@ -407,16 +409,22 @@ var embed = function(params){
 
   POLLS[pollId] = poll;
 
+  if(STATE[pollId] === undefined){
+    STATE[pollId] = {};
+    STATE[pollId]['submission'] = R.propOr(null, 'submission', existingData);
+    STATE[pollId]['submissions'] = R.propOr([], 'submissions', existingData);
+  }
+
   if(poll){
-    mount(poll, existingData);
+    mount(poll);
   } else {
     throw pollId + ': No poll to embed';
   }
 };
 
 var init = function(pollConfigs){
-  POLLS = R.mapObjIndexed(function(element, name, obj){
-    return R.assoc('name', name, element);
+  POLLS = R.mapObjIndexed(function(element, id, obj){
+    return R.assoc('id', id, element);
   }, pollConfigs);
 };
 

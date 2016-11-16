@@ -310,6 +310,8 @@
       }
     });
 
+    var serverTimeout = 3000;
+
     var getData = function(identifier, callback){
 
       // local or tincan STUB \\
@@ -333,7 +335,7 @@
 
         callback({ submission: mydata[identifier], submissions: theirdata[identifier] });
 
-      }, 3000)
+      }, serverTimeout)
     };
 
 //    $(document).on('courseReady', function(){
@@ -363,6 +365,15 @@
     getData('poll-4-version-1', function(data) {
       Pollr.embed({poll: 'poll-4-version-1', mount: '#button-poll', data: data, actions: { 'continue': function(){ alert('yug') } } });
     });
+
+    setTimeout(function(){
+      $('#button-poll').html('...testing multiple embeds of the same poll, this poll will return shortly...');
+
+      getData('poll-4-version-1', function(data) {
+        Pollr.embed({poll: 'poll-4-version-1', mount: '#button-poll', data: data, actions: { 'continue': function(){ alert('yug') } } });
+      });
+
+    }, serverTimeout + 1000);
 
   </script>
 
