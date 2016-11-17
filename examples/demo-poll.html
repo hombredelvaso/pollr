@@ -330,7 +330,8 @@
           'poll-1-version-2': [],
           'poll-2-version-1': [{ value: 'I like this' }, { value: 'This is ok...' }, { value: 'It sucks.' }],
           'poll-3-version-1': [{ value: 'Mustangs!' }, { value: 'Taurus...' }, { value: 'Sable.' }, { value: 'Corvette' }],
-          'poll-4-version-1': [{ value: 'Yes' }, { value: 'Yes' }, { value: 'No' }, { value: 'No' }, { value: 'No' }, { value: 'No' }]
+          'poll-4-version-1': [{ value: 'Yes' }, { value: 'Yes' }, { value: 'No' }, { value: 'No' }, { value: 'No' }, { value: 'No' }],
+          'poll-4-new-data': [{ value: 'Yes' }, { value: 'Yes' }, { value: 'No' }, { value: 'No' }]
         };
 
         callback({ submission: mydata[identifier], submissions: theirdata[identifier] });
@@ -369,8 +370,8 @@
     setTimeout(function(){
       $('#button-poll').html('...testing multiple embeds of the same poll, this poll will return shortly...');
 
-      getData('poll-4-version-1', function(data) {
-        Pollr.embed({poll: 'poll-4-version-1', mount: '#button-poll', data: data, actions: { 'continue': function(){ alert('yug') } } });
+      getData('poll-4-new-data', function(newData) {
+        Pollr.embed({poll: 'poll-4-version-1', mount: '#button-poll', data: newData, actions: { 'continue': function(){ alert('yug') } } });
       });
 
     }, serverTimeout + 1000);

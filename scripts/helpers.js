@@ -36,11 +36,36 @@ var HELPERS = (function(){
   // 'clear existing then add new event listener; so that it can be called multiple times without duplicating handling'
   // example use:
 
-  // listen($(document), 'click', '#example', function(){ ... })
+  // listen({
+  //   source: $(document),
+  //   event: 'click',
+  //   target: '#example',
+  //   before: function(context){ /* return false and will not bind, return true or dont return will bind... allows for short circut logic */ }
+  //   after: function(context){ /* context.wasBound is true or false */ }
+  //   callback: function(){ ... }
+  // })
 
-  var listen = function(source, event, target, callback){
-    source.off(event, target);
-    source.on(event, target, callback);
+  var listen = function(params){
+    var wasBound = false;
+    var before = params.before || function(){};
+    var after = params.after || function(){};
+
+    var shouldBind = before(params) !== false;
+
+    if(shouldBind){
+      wasBound = true;
+      if(params.target){
+        params.source.off(params.event, params.target);
+        params.source.on(params.event, params.target, params.callback);
+      } else {
+        params.source.off(params.event);
+        params.source.on(params.event, params.callback);
+      }
+    }
+
+    params['wasBound'] = wasBound;
+
+    after(params);
   };
 
   return {
